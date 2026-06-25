@@ -5,6 +5,7 @@ import com.jlaker.springbootmall.dto.ProductQueryParams;
 import com.jlaker.springbootmall.dto.ProductRequest;
 import com.jlaker.springbootmall.model.Product;
 import com.jlaker.springbootmall.service.ProductService;
+import com.jlaker.springbootmall.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,7 +24,7 @@ public class ProductController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "created_date") String orderBy,
@@ -39,7 +40,15 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
         List<Product> productList = productService.getProducts(productQueryParams);
-        return ResponseEntity.status(HttpStatus.OK).body (productList);
+
+        Integer total = productService.countProduct(productQueryParams);
+
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset (offset);
+        page.setTotal(total);
+        page.setResults(productList);
+        return ResponseEntity.status(HttpStatus.OK).body (page);
     }
 
 
