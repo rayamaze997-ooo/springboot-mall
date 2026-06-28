@@ -1,9 +1,12 @@
 package com.jlaker.springbootmall.controller;
 
+import ch.qos.logback.core.status.Status;
 import com.jlaker.springbootmall.dto.CreateOrderRequest;
 import com.jlaker.springbootmall.model.Order;
+import com.jlaker.springbootmall.model.User;
 import com.jlaker.springbootmall.service.OrderService;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ public class OrderController {
     @PostMapping("/users/{userId}/orders")
     public ResponseEntity<?> createOrder(@PathVariable Integer userId,
             @RequestBody @Valid CreateOrderRequest createOrderRequest){
+
+
             Integer orderId = orderService.createOrder(userId, createOrderRequest);
 
             Order order = orderService.getOrderById(orderId);
